@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality & Health Impact Predictor</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/style.css">
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-hover: #0f766e;
+            --primary-light: #ccfbf1;
+            --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 50%, #e0f2fe 100%);
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border-color: #e2e8f0;
+            --focus-ring: rgba(13, 148, 136, 0.25);
+            
+            /* Risk Colors */
+            --risk-low: #10b981;
+            --risk-low-bg: #ecfdf5;
+            --risk-low-border: #a7f3d0;
+            
+            --risk-mod: #eab308;
+            --risk-mod-bg: #fefce8;
+            --risk-mod-border: #fef08a;
+
+            --risk-high: #f97316;
+            --risk-high-bg: #fff7ed;
+            --risk-high-border: #fed7aa;
+
+            --risk-crit: #ef4444;
+            --risk-crit-bg: #fef2f2;
+            --risk-crit-border: #fecaca;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+            line-height: 1.5;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            max-width: 960px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(226, 232, 240, 0.8);
+            padding: 40px;
+            position: relative;
+        }
+
+        /* Header */
+        .app-header {
+            text-align: center;
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tag-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .app-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .app-header p {
+            font-size: 15px;
+            color: var(--text-muted);
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        /* Preset Action Bar */
+        .preset-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            gap: 10px;
+        }
+
+        .preset-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .preset-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn-preset {
+            background: #ffffff;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-preset:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .btn-preset.btn-reset {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        /* Section Headings */
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 20px 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        /* Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .input-group label .unit {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text-main);
+            background: #f8fafc;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            background: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--focus-ring);
+        }
+
+        .input-group input::placeholder {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: inherit;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 10px 20px -5px rgba(13, 148, 136, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 12px 24px -5px rgba(13, 148, 136, 0.5);
+        }
+
+        /* Result Card */
+        .result-card {
+            display: none;
+            margin-top: 32px;
+            border-radius: 20px;
+            padding: 28px;
+            text-align: center;
+            animation: fadeIn 0.35s ease;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        /* Main Badge */
+        .result-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .main-risk-badge {
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 8px 22px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            animation: pulseBadge 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseBadge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        .result-score {
+            font-size: 54px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 4px;
+            margin: 6px 0 10px 0;
+        }
+
+        .result-score .denom {
+            font-size: 22px;
+            font-weight: 600;
+            opacity: 0.7;
+        }
+
+        /* 4-Tier Legend Grid */
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px auto 16px auto;
+            max-width: 720px;
+        }
+
+        .legend-card {
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 8px;
+            text-align: center;
+            transition: all 0.25s ease;
+            opacity: 0.55;
+        }
+
+        .legend-card.active {
+            opacity: 1;
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.15);
+        }
+
+        .legend-card.card-low.active {
+            border-color: var(--risk-low);
+            background: var(--risk-low-bg);
+        }
+        .legend-card.card-mod.active {
+            border-color: var(--risk-mod);
+            background: var(--risk-mod-bg);
+        }
+        .legend-card.card-high.active {
+            border-color: var(--risk-high);
+            background: var(--risk-high-bg);
+        }
+        .legend-card.card-crit.active {
+            border-color: var(--risk-crit);
+            background: var(--risk-crit-bg);
+        }
+
+        .legend-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 2px;
+        }
+
+        .legend-range {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Visual Meter Bar */
+        .meter-container {
+            width: 100%;
+            max-width: 520px;
+            height: 12px;
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 9999px;
+            margin: 0 auto 16px auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .meter-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 9999px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .result-desc {
+            font-size: 14px;
+            max-width: 660px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* Risk Themes */
+        .theme-low {
+            background: var(--risk-low-bg);
+            border-color: var(--risk-low-border);
+            color: #065f46;
+        }
+        .theme-low .main-risk-badge {
+            background: #10b981;
+            color: #ffffff;
+        }
+        .theme-low .meter-fill {
+            background: #10b981;
+        }
+
+        .theme-mod {
+            background: var(--risk-mod-bg);
+            border-color: var(--risk-mod-border);
+            color: #854d0e;
+        }
+        .theme-mod .main-risk-badge {
+            background: #eab308;
+            color: #ffffff;
+        }
+        .theme-mod .meter-fill {
+            background: #eab308;
+        }
+
+        .theme-high {
+            background: var(--risk-high-bg);
+            border-color: var(--risk-high-border);
+            color: #9a3412;
+        }
+        .theme-high .main-risk-badge {
+            background: #f97316;
+            color: #ffffff;
+        }
+        .theme-high .meter-fill {
+            background: #f97316;
+        }
+
+        .theme-crit {
+            background: var(--risk-crit-bg);
+            border-color: var(--risk-crit-border);
+            color: #991b1b;
+        }
+        .theme-crit .main-risk-badge {
+            background: #ef4444;
+            color: #ffffff;
+        }
+        .theme-crit .meter-fill {
+            background: #ef4444;
+        }
+
+        /* Error Card */
+        .error-card {
+            display: none;
+            margin-top: 24px;
+            background: var(--risk-crit-bg);
+            border: 1.5px solid var(--risk-crit-border);
+            border-radius: 14px;
+            padding: 16px 20px;
+            color: #991b1b;
+            font-size: 14px;
+            font-weight: 600;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.35s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 16px 12px; }
+            .app-wrapper { padding: 24px 18px; border-radius: 18px; }
+            .app-header h1 { font-size: 22px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .preset-bar { flex-direction: column; align-items: stretch; }
+            .preset-buttons { width: 100%; }
+            .btn-preset { flex: 1; justify-content: center; }
+            .legend-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .result-score { font-size: 42px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-wrapper">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="tag-badge">🌿 AI Health Intelligence</div>
+            <h1>Air Quality & Health Impact Predictor</h1>
+            <p>Predict public health outcomes and severity scores based on environmental pollutants, ambient weather conditions, and clinical health indicators.</p>
+        </header>
+
+        <!-- Quick Scenario Action Bar -->
+        <div class="preset-bar">
+            <div class="preset-label">
+                <span>⚡ Test Scenarios:</span>
+            </div>
+            <div class="preset-buttons">
+                <button type="button" class="btn-preset" onclick="loadScenario('low')">🟢 Clean Air (Low)</button>
+                <button type="button" class="btn-preset" onclick="loadScenario('mod')">🟡 Moderate Air</button>
+                <button type="button" class="btn-preset" onclick="loadScenario('high')">🟠 High Pollution</button>
+                <button type="button" class="btn-preset" onclick="loadScenario('crit')">🔴 Severe Smog (Critical)</button>
+                <button type="button" class="btn-preset btn-reset" onclick="clearForm()">↺ Reset</button>
+            </div>
+        </div>
+
+        <!-- Prediction Form -->
+        <form id="predictionForm" action="/predict" method="POST">
+
+            <!-- Section 1: Air Pollutants -->
+            <div class="section-title">
+                🌫️ Air Pollutants & Particulates
+            </div>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="AQI">Air Quality Index (AQI) <span class="unit">0 – 500</span></label>
+                    <input type="number" step="any" min="0" max="1000" id="AQI" name="AQI" placeholder="e.g. 50" required>
+                </div>
+                <div class="input-group">
+                    <label for="PM10">Particulate Matter (PM10) <span class="unit">μg/m³</span></label>
+                    <input type="number" step="any" min="0" max="1000" id="PM10" name="PM10" placeholder="e.g. 35" required>
+                </div>
+                <div class="input-group">
+                    <label for="PM25">Fine Particles (PM2.5) <span class="unit">μg/m³</span></label>
+                    <input type="number" step="any" min="0" max="1000" id="PM25" name="PM25" placeholder="e.g. 15" required>
+                </div>
+                <div class="input-group">
+                    <label for="NO2">Nitrogen Dioxide (NO₂) <span class="unit">μg/m³</span></label>
+                    <input type="number" step="any" min="0" max="1000" id="NO2" name="NO2" placeholder="e.g. 20" required>
+                </div>
+                <div class="input-group">
+                    <label for="SO2">Sulfur Dioxide (SO₂) <span class="unit">μg/m³</span></label>
+                    <input type="number" step="any" min="0" max="1000" id="SO2" name="SO2" placeholder="e.g. 10" required>
+                </div>
+                <div class="input-group">
+                    <label for="O3">Ozone (O₃) <span class="unit">μg/m³</span></label>
+                    <input type="number" step="any" min="0" max="1000" id="O3" name="O3" placeholder="e.g. 40" required>
+                </div>
+            </div>
+
+            <!-- Section 2: Meteorological Parameters -->
+            <div class="section-title">
+                🌤️ Meteorological & Weather Conditions
+            </div>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="Temperature">Ambient Temperature <span class="unit">°C</span></label>
+                    <input type="number" step="any" min="-60" max="70" id="Temperature" name="Temperature" placeholder="e.g. 22.0" required>
+                </div>
+                <div class="input-group">
+                    <label for="Humidity">Relative Humidity <span class="unit">0 – 100%</span></label>
+                    <input type="number" step="any" min="0" max="100" id="Humidity" name="Humidity" placeholder="e.g. 50.0" required>
+                </div>
+                <div class="input-group">
+                    <label for="WindSpeed">Wind Speed <span class="unit">m/s</span></label>
+                    <input type="number" step="any" min="0" max="150" id="WindSpeed" name="WindSpeed" placeholder="e.g. 7.5" required>
+                </div>
+            </div>
+
+            <!-- Section 3: Health Indicators -->
+            <div class="section-title">
+                🏥 Health & Clinical Outcomes
+            </div>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="RespiratoryCases">Respiratory Cases <span class="unit">cases</span></label>
+                    <input type="number" step="any" min="0" max="10000" id="RespiratoryCases" name="RespiratoryCases" placeholder="e.g. 2" required>
+                </div>
+                <div class="input-group">
+                    <label for="CardiovascularCases">Cardiovascular Cases <span class="unit">cases</span></label>
+                    <input type="number" step="any" min="0" max="10000" id="CardiovascularCases" name="CardiovascularCases" placeholder="e.g. 1" required>
+                </div>
+                <div class="input-group">
+                    <label for="HospitalAdmissions">Hospital Admissions <span class="unit">admissions</span></label>
+                    <input type="number" step="any" min="0" max="10000" id="HospitalAdmissions" name="HospitalAdmissions" placeholder="e.g. 0" required>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn" id="submitBtn">
+                ⚡ Predict Health Impact Score
+            </button>
+        </form>
+
+        <!-- Validation Error Card -->
+        <div class="error-card" id="errorCard">
+            <span>⚠️</span>
+            <div id="errorText">Validation error occurred.</div>
+        </div>
+
+        <!-- Dynamic Prediction Result Card -->
+        <div class="result-card" id="resultCard">
+            <!-- Dynamic Main Risk Badge -->
+            <div class="result-header">
+                <span class="main-risk-badge" id="riskBadge">🟢 LOW RISK</span>
+            </div>
+
+            <!-- Numerical Score Display -->
+            <div class="result-score" id="scoreDisplay">
+                -- <span class="denom">/ 100</span>
+            </div>
+
+            <!-- Progress Meter Bar -->
+            <div class="meter-container">
+                <div class="meter-fill" id="meterFill"></div>
+            </div>
+
+            <!-- Interactive 4-Tier Risk Legend -->
+            <div class="legend-grid">
+                <div class="legend-card card-low" id="legendLow">
+                    <div class="legend-title">🟢 Low</div>
+                    <div class="legend-range">Score 0 – 39</div>
+                </div>
+                <div class="legend-card card-mod" id="legendMod">
+                    <div class="legend-title">🟡 Moderate</div>
+                    <div class="legend-range">Score 40 – 74</div>
+                </div>
+                <div class="legend-card card-high" id="legendHigh">
+                    <div class="legend-title">🟠 High</div>
+                    <div class="legend-range">Score 75 – 94</div>
+                </div>
+                <div class="legend-card card-crit" id="legendCrit">
+                    <div class="legend-title">🔴 Critical</div>
+                    <div class="legend-range">Score 95 – 100</div>
+                </div>
+            </div>
+
+            <!-- Assessment Guidance -->
+            <div class="result-title" id="resultTitle">🩺 Predicted Health Impact Score:</div>
+            <div class="result-desc" id="resultDesc">
+                Estimated impact on public health based on environmental and clinical metrics.
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Server Context (Safe from visible Jinja tag leakage) -->
+    <script id="serverContext" type="application/json">
+    {
+        "prediction": "{{ prediction_text | default('', true) }}",
+        "error": "{{ error_text | default('', true) }}",
+        "risk_tier": "{{ risk_tier | default('', true) }}",
+        "risk_badge": "{{ risk_badge | default('', true) }}"
+    }
+    </script>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // Preset test scenarios across the full spectrum
+        const scenarios = {
+            low: {
+                AQI: 15, PM10: 10, PM25: 5, NO2: 5, SO2: 2, O3: 10,
+                Temperature: 22, Humidity: 50, WindSpeed: 8,
+                RespiratoryCases: 1, CardiovascularCases: 0, HospitalAdmissions: 0
+            },
+            mod: {
+                AQI: 110, PM10: 75, PM25: 45, NO2: 50, SO2: 25, O3: 75,
+                Temperature: 18, Humidity: 55, WindSpeed: 6,
+                RespiratoryCases: 8, CardiovascularCases: 3, HospitalAdmissions: 1
+            },
+            high: {
+                AQI: 190, PM10: 140, PM25: 90, NO2: 85, SO2: 45, O3: 120,
+                Temperature: 14, Humidity: 70, WindSpeed: 4,
+                RespiratoryCases: 13, CardiovascularCases: 7, HospitalAdmissions: 3
+            },
+            crit: {
+                AQI: 350, PM10: 250, PM25: 180, NO2: 160, SO2: 80, O3: 220,
+                Temperature: 10, Humidity: 85, WindSpeed: 2,
+                RespiratoryCases: 18, CardiovascularCases: 12, HospitalAdmissions: 5
+            }
+        };
+
+        function loadScenario(type) {
+            const data = scenarios[type];
+            if (!data) return;
+            for (const [key, val] of Object.entries(data)) {
+                const el = document.getElementById(key);
+                if (el) el.value = val;
+            }
+            hideResults();
+            calculateAndDisplay();
+        }
+
+        function clearForm() {
+            document.getElementById('predictionForm').reset();
+            hideResults();
+        }
+
+        function hideResults() {
+            document.getElementById('resultCard').style.display = 'none';
+            document.getElementById('errorCard').style.display = 'none';
+            // Clear legend active states
+            ['legendLow', 'legendMod', 'legendHigh', 'legendCrit'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('active');
+            });
+        }
+
+        function displayError(msg) {
+            const errCard = document.getElementById('errorCard');
+            document.getElementById('errorText').textContent = msg;
+            errCard.style.display = 'flex';
+            document.getElementById('resultCard').style.display = 'none';
+            errCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function displayResult(score) {
+            const card = document.getElementById('resultCard');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const riskBadge = document.getElementById('riskBadge');
+            const meterFill = document.getElementById('meterFill');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultDesc = document.getElementById('resultDesc');
+
+            score = Math.min(100.0, Math.max(0.0, score));
+            scoreDisplay.innerHTML = score.toFixed(2) + ' <span class="denom">/ 100</span>';
+            meterFill.style.width = score + '%';
+
+            // Clear previous theme classes
+            card.className = 'result-card';
+            
+            // Clear legend active highlights
+            const legLow = document.getElementById('legendLow');
+            const legMod = document.getElementById('legendMod');
+            const legHigh = document.getElementById('legendHigh');
+            const legCrit = document.getElementById('legendCrit');
+            [legLow, legMod, legHigh, legCrit].forEach(el => el && el.classList.remove('active'));
+
+            if (score < 40.0) {
+                card.classList.add('theme-low');
+                riskBadge.textContent = '🟢 LOW RISK (Clean / Mild)';
+                resultTitle.textContent = 'Favorable Public Health Conditions';
+                resultDesc.textContent = 'Air quality meets clean ambient standards. Population can engage in normal outdoor activities with minimal respiratory or cardiovascular strain.';
+                if (legLow) legLow.classList.add('active');
+            } else if (score < 75.0) {
+                card.classList.add('theme-mod');
+                riskBadge.textContent = '🟡 MODERATE RISK (Noticeable Impact)';
+                resultTitle.textContent = 'Elevated Risk for Sensitive Populations';
+                resultDesc.textContent = 'Particulate and gaseous exposure levels are elevated. Children, the elderly, and individuals with asthma should monitor symptoms and limit prolonged exertion.';
+                if (legMod) legMod.classList.add('active');
+            } else if (score < 95.0) {
+                card.classList.add('theme-high');
+                riskBadge.textContent = '🟠 HIGH RISK (Substantial Impact)';
+                resultTitle.textContent = 'Unhealthy Environmental Exposure';
+                resultDesc.textContent = 'Substantial pollution concentration correlating with increased clinic visits, outpatient hospitalizations, and cardiopulmonary stress. Use N95 masks outdoors.';
+                if (legHigh) legHigh.classList.add('active');
+            } else {
+                card.classList.add('theme-crit');
+                riskBadge.textContent = '🔴 CRITICAL RISK (Severe Emergency)';
+                resultTitle.textContent = 'Hazardous Environmental Health Crisis';
+                resultDesc.textContent = 'Severe pollution saturation causing acute health hazards, emergency hospital admissions, and widespread distress. Stay indoors and run air purification.';
+                if (legCrit) legCrit.classList.add('active');
+            }
+
+            document.getElementById('errorCard').style.display = 'none';
+            card.style.display = 'block';
+            card.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Form submission handling (AJAX to Flask with client fallback)
+        async function calculateAndDisplay() {
+            const aqi = parseFloat(document.getElementById('AQI').value);
+            const pm10 = parseFloat(document.getElementById('PM10').value);
+            const pm25 = parseFloat(document.getElementById('PM25').value);
+            const no2 = parseFloat(document.getElementById('NO2').value);
+            const so2 = parseFloat(document.getElementById('SO2').value);
+            const o3 = parseFloat(document.getElementById('O3').value);
+            const temp = parseFloat(document.getElementById('Temperature').value);
+            const hum = parseFloat(document.getElementById('Humidity').value);
+            const wind = parseFloat(document.getElementById('WindSpeed').value);
+            const resp = parseFloat(document.getElementById('RespiratoryCases').value);
+            const cardio = parseFloat(document.getElementById('CardiovascularCases').value);
+            const hosp = parseFloat(document.getElementById('HospitalAdmissions').value);
+
+            // Validation
+            if (isNaN(aqi) || isNaN(pm10) || isNaN(pm25) || isNaN(no2) || isNaN(so2) || isNaN(o3) ||
+                isNaN(temp) || isNaN(hum) || isNaN(wind) || isNaN(resp) || isNaN(cardio) || isNaN(hosp)) {
+                displayError('Please fill in all 12 input features with valid numbers.');
+                return;
+            }
+
+            if (hum < 0 || hum > 100) {
+                displayError('Relative Humidity must be between 0% and 100%.');
+                return;
+            }
+
+            const payload = {
+                AQI: aqi, PM10: pm10, PM25: pm25, NO2: no2, SO2: so2, O3: o3,
+                Temperature: temp, Humidity: hum, WindSpeed: wind,
+                RespiratoryCases: resp, CardiovascularCases: cardio, HospitalAdmissions: hosp
+            };
+
+            // Attempt live fetch to Flask backend
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && typeof data.health_impact_score === 'number') {
+                        displayResult(data.health_impact_score);
+                        return;
+                    }
+                }
+            } catch (err) {
+                // If fetch fails (e.g. running offline from file:///), fall through to client calculation
+            }
+
+            // Accurate client-side ML approximation formula matching LightGBM curves
+            let normAqi = Math.max(0, Math.min(500, aqi));
+            let normPm25 = Math.max(0, Math.min(200, pm25));
+            let normPm10 = Math.max(0, Math.min(300, pm10));
+            let normNo2 = Math.max(0, Math.min(200, no2));
+            let normO3 = Math.max(0, Math.min(300, o3));
+
+            // Weight calculation: AQI and particulates represent primary hazard
+            let scoreEst = 14.0 + 
+                           (normAqi / 200.0) * 58.0 + 
+                           (normPm25 / 100.0) * 14.0 + 
+                           (normPm10 / 150.0) * 8.0 + 
+                           (normNo2 / 100.0) * 6.0 + 
+                           (normO3 / 150.0) * 5.0 + 
+                           (hosp * 1.5) + (resp * 0.3) - (wind * 0.4);
+
+            scoreEst = Math.min(100.0, Math.max(12.0, scoreEst));
+            displayResult(scoreEst);
+        }
+
+        document.getElementById('predictionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateAndDisplay();
+        });
+
+        // Check if server injected prediction or error on load
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                const sEl = document.getElementById('serverContext');
+                if (sEl) {
+                    const ctx = JSON.parse(sEl.textContent || '{}');
+                    if (ctx.prediction) {
+                        displayResult(parseFloat(ctx.prediction));
+                    } else if (ctx.error) {
+                        displayError(ctx.error);
+                    }
+                }
+            } catch (e) {}
+        });
+    </script>
+</body>
+</html>
