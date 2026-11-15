@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Science Playground</title>
+<style>
+:root{--pri:#4f46e5;--ok:#16a34a;--ink:#1e293b;--line:#e2e8f0}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,Segoe UI,Arial,sans-serif;font-size:18px;line-height:1.5;color:var(--ink);background:linear-gradient(#eef2ff,#fdf2f8);min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:14px 20px;background:var(--pri);color:#fff}
+header h1{margin:0;font-size:22px;cursor:pointer}
+.pill{background:#fff;color:var(--pri);border-radius:99px;padding:4px 12px;font-weight:bold;font-size:15px}
+main{max-width:900px;margin:18px auto;padding:0 14px 40px}
+.card{background:#fff;border-radius:18px;padding:18px;margin:12px 0;box-shadow:0 4px 14px #0001}
+h2{margin:6px 0 10px;font-size:26px}h3{margin:18px 0 8px}
+.mut{color:#64748b;font-size:15px}.lead{font-size:19px;margin:4px 0 10px}
+.goal{background:#eef2ff;border-radius:12px;padding:10px 14px;font-weight:600}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}.row.c{justify-content:center}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:12px;padding:12px 18px;font-size:17px;font-weight:600;cursor:pointer;box-shadow:0 3px 0 #3730a3}
+.btn:active{transform:translateY(2px);box-shadow:none}.btn.s{background:#e0e7ff;color:var(--pri);box-shadow:0 3px 0 #c7d2fe}.btn.g{background:var(--ok);box-shadow:0 3px 0 #166534}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.tile{border-radius:18px;padding:18px;cursor:pointer;text-align:center;border:0;font:inherit;color:var(--ink);box-shadow:0 4px 14px #0001;transition:transform .15s}
+.tile:hover{transform:translateY(-4px)}.tile:disabled{opacity:.45;cursor:not-allowed}.tile .em{font-size:54px}.tile b{display:block;font-size:21px}.tile .st{color:#f59e0b;font-size:22px;margin-top:4px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.steps div{background:#f8fafc;border-radius:12px;padding:12px}
+.people{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:flex-end;margin:12px 0}
+.person{width:96px;text-align:center;background:#fff7ed;border:2px solid #fed7aa;border-radius:14px;padding:6px 2px}
+.person .face{font-size:44px;line-height:1.1}.person .nm{font-size:14px;font-weight:600}.person .money{font-weight:bold;color:#c2410c}.person .badge{font-size:13px;min-height:20px;color:#166534;font-weight:bold}
+.person.rich{width:132px;background:#fef9c3;border:3px solid #eab308;animation:pop .5s}.person.rich .face{font-size:60px}.person.rich .money{font-size:22px;color:#a16207}
+@keyframes pop{0%{transform:scale(.2)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.cards3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.cd{border-radius:14px;padding:12px;text-align:center;background:#f1f5f9}.cd .big{font-size:32px;font-weight:800}.cd small{display:block;color:#475569;font-size:14px}
+.tasks{list-style:none;padding:0;margin:0}.tasks li{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.ck{font-size:22px}
+.why{background:#ecfdf5;border-left:5px solid var(--ok);border-radius:8px;padding:8px 12px;margin-top:6px}
+.res{background:#eef2ff;border-left:6px solid var(--pri);border-radius:12px;padding:12px 16px;margin-top:12px}.stars{font-size:32px;color:#f59e0b}
+svg{width:100%;height:auto;background:#fcfcff;border:1px solid var(--line);border-radius:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:600px){.two{grid-template-columns:1fr}}
+.fp{display:inline-block;width:26px;height:26px;border-radius:50%;text-align:center;font-size:14px;line-height:26px;font-weight:bold;margin:2px}.fp.h{background:#fde047}.fp.t{background:#e2e8f0}
+input[type=range]{width:100%;height:28px}label{font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:15px}th,td{border-bottom:1px solid var(--line);padding:6px;text-align:left}
+input[type=text],input[type=number],select,textarea{padding:8px;border:1px solid var(--line);border-radius:8px;font:inherit;max-width:100%}textarea{width:100%}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}.person[data-i]:hover{transform:scale(1.06)}.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:30px;background:#1e293b;color:#fff;padding:10px 18px;border-radius:99px;font-weight:700;z-index:99;animation:tu 2s forwards;white-space:nowrap}
+@keyframes tu{0%{opacity:0;bottom:10px}15%{opacity:1;bottom:40px}80%{opacity:1}100%{opacity:0;bottom:70px}}
+.cf{position:fixed;top:-30px;font-size:26px;z-index:98;pointer-events:none;animation:fall 2.6s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.8}}
+.owl{display:flex;gap:10px;align-items:center;margin:10px 0}.owl .ow{font-size:42px}.bub{background:#fff7ed;border:2px solid #fed7aa;border-radius:14px;padding:8px 12px;font-weight:600}
+.bar{height:14px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#22c55e,#facc15);border-radius:99px;transition:width .4s}
+.bdg{padding:4px 10px;border-radius:99px;background:#e2e8f0;color:#64748b;font-size:14px;font-weight:600}.bdg.on{background:#fef08a;color:#854d0e}
+.chip{background:#fff7ed;border:2px solid #fed7aa;border-radius:14px;padding:10px 14px;font:inherit;font-weight:700;cursor:pointer;margin:4px;transition:transform .1s}.chip:hover{transform:scale(1.07);border-color:#4f46e5}.chip svg{width:150px}
+.chip.w{display:block;width:100%;max-width:540px;margin:8px auto;text-align:center}
+.ck{display:inline-block}.ck.pop{animation:ckp .5s}@keyframes ckp{0%{transform:scale(.3) rotate(-30deg)}60%{transform:scale(1.5)}100%{transform:scale(1)}}
+button.pill{font:inherit;font-size:15px;font-weight:bold}</style>
+</head>
+<body>
+<header><h1 onclick="go('home')">🧠 Data Science Playground</h1><div class="row" style="margin:0"><div class="pill" id="xp"></div><div class="pill" id="score"></div><button class="pill" id="snd" style="border:0;cursor:pointer"></button></div></header>
+<main id="stage"></main>
+<script>
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s),stage=$('#stage');
+function rng(s){return function(){s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+let R=rng(Date.now()%1e9);const rnd=()=>R(),gauss=()=>Math.sqrt(-2*Math.log(1-rnd()))*Math.cos(2*Math.PI*rnd());
+const mean=a=>a.reduce((s,x)=>s+x,0)/a.length,clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const median=a=>{const s=a.slice().sort((x,y)=>x-y),n=s.length;return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2};
+const shuf=a=>a.map(v=>[rnd(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+const pick=a=>a[Math.floor(rnd()*a.length)];
+const ri=(a,b)=>a+Math.floor(rnd()*(b-a+1));
+/* a bag hands out items one by one and only repeats after everything was used */
+const bag=a=>{let p=[];return()=>{if(!p.length)p=shuf(a);return p.pop()}};
+/* answer buttons: the right answer + wrong ones, shuffled, no duplicates */
+const chips=(c,cands,n=4,cls='chip')=>{const s=[c];shuf(cands).forEach(x=>{if(s.length<n&&!s.includes(x)&&(typeof x!=='number'||x>0))s.push(x)});
+ if(typeof c==='number'){let k=1;while(s.length<n){if(!s.includes(c+k))s.push(c+k);k++}}
+ return shuf(s).map(x=>`<button class="${cls}" data-a="${esc(x)}">${esc(x)}</button>`).join('')};
+const STARS_N=6;
+let S={stars:Array(STARS_N).fill(null)};
+try{const s=JSON.parse(localStorage.getItem('dsp'));if(s&&s.stars&&s.stars.length<=STARS_N){while(s.stars.length<STARS_N)s.stars.push(null);S=s}}catch(e){}
+const save=()=>{try{localStorage.setItem('dsp',JSON.stringify(S))}catch(e){}};
+const LV=[
+{e:'🌾',t:'Village Money',l:'Average, middle & outliers',c:'#fde68a',goal:'🎯 Goal: find the fairest way to describe a “typical” villager.'},
+{e:'🪙',t:'Is the Coin Fair?',l:'Luck vs real (hypothesis test)',c:'#bbf7d0',goal:'🎯 Goal: learn to tell plain luck from something real.'},
+{e:'🍦',t:'Ice Cream Sales',l:'Predicting with a line (regression)',c:'#bae6fd',goal:'🎯 Goal: draw a line that predicts ice cream sales.'},
+{e:'🍎',t:'Sort the Fruits',l:'Finding groups (clustering)',c:'#ddd6fe',goal:'🎯 Goal: watch a computer find groups all by itself.'},
+{e:'🐱',t:'Cat or Dog?',l:'Classifying with neighbors (KNN)',c:'#fbcfe8',goal:'🎯 Goal: teach a computer to label a mystery pet by asking its neighbors.'},
+{e:'📋',t:'Ask the Village',l:'Surveys, samples & bias',c:'#a7f3d0',goal:'🎯 Goal: learn how to ask a few people and still get a fair answer.'}];
+const unlocked=i=>i===0||S.stars[i-1]!==null;
+let P={xp:0,badges:[],best:0,streak:0,last:'',snd:true};try{Object.assign(P,JSON.parse(localStorage.getItem('dsp_p'))||{})}catch(e){}
+const saveP=()=>{try{localStorage.setItem('dsp_p',JSON.stringify(P))}catch(e){}};
+(()=>{const t=new Date().toDateString();if(P.last!==t){const y=new Date(Date.now()-864e5).toDateString();P.streak=P.last===y?P.streak+1:1;P.last=t;saveP()}})();
+const RANKS=[[0,'🐣 Rookie'],[60,'🔍 Detective'],[150,'📊 Analyst'],[300,'🧪 Scientist'],[500,'🚀 Data Master'],[800,'👑 Legend']];
+function rankInfo(){let i=0;RANKS.forEach((r,k)=>{if(P.xp>=r[0])i=k});const c=RANKS[i][0],n=RANKS[i+1];return{i,t:RANKS[i][1],next:n?n[0]:0,nn:n?n[1]:'',pct:n?(P.xp-c)/(n[0]-c)*100:100}}
+function sfx(t){if(!P.snd)return;try{const c=sfx.c||(sfx.c=new(window.AudioContext||window.webkitAudioContext)());let at=c.currentTime;({ok:[[660,.08],[880,.1]],bad:[[220,.2],[170,.2]],win:[[523,.1],[659,.1],[784,.1],[1047,.25]],xp:[[880,.05]]}[t]||[]).forEach(([f,d])=>{const o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=f;g.gain.value=.08;o.connect(g);g.connect(c.destination);o.start(at);o.stop(at+d);at+=d})}catch(e){}}
+function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),2000)}
+function confetti(){for(let i=0;i<40;i++){const e=document.createElement('span');e.className='cf';e.textContent=['🎉','⭐','✨','🎊','🌟'][i%5];e.style.left=Math.random()*100+'vw';e.style.animationDelay=Math.random()*.8+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),3600)}}
+function addXP(n,why){const b=rankInfo().i;P.xp+=n;saveP();hdr();toast('+'+n+' XP'+(why?' '+why:''));const a=rankInfo();if(a.i>b){setTimeout(()=>{toast('🎉 Rank up! You are now '+a.t);sfx('win');confetti()},900)}checkBadges()}
+const BADGES=[{id:'first',t:'🥇 First Star',d:'Earn your first star'},{id:'three',t:'🌟 Perfect Level',d:'Get 3 stars on a level'},{id:'all',t:'🏆 Level Master',d:'Finish all 6 levels'},{id:'combo5',t:'🔥 5 In A Row',d:'Quick Rounds: 5 correct in a row'},{id:'combo10',t:'🌋 10 In A Row',d:'Quick Rounds: 10 correct in a row'},{id:'qr200',t:'⚡ Speed Star',d:'Score 200 in Quick Rounds'},{id:'xp150',t:'📊 Analyst',d:'Reach 150 XP'}];
+function unlock(id){if(P.badges.includes(id))return;P.badges.push(id);saveP();const b=BADGES.find(x=>x.id===id);toast('🏅 Badge unlocked: '+b.t);sfx('win');confetti()}
+function checkBadges(){if(S.stars.some(x=>x>0))unlock('first');if(S.stars.some(x=>x===3))unlock('three');if(S.stars.every(x=>x!==null&&x>0))unlock('all');if(P.best>=200)unlock('qr200');if(P.xp>=150)unlock('xp150')}
+const PRAISE=['Great job! 🎉','You are getting it!','Nice move!','Brilliant!','Look at you go! 🚀','Hoot hoot! Keep going!'];
+function say(m){const b=$('#owl .bub');if(b)b.textContent=m}
+
+function hdr(){$('#score').textContent='⭐ '+S.stars.reduce((s,x)=>s+(x||0),0)+' / '+(STARS_N*3);const r=rankInfo();$('#xp').textContent=r.t+' · '+P.xp+' XP';$('#snd').textContent=P.snd?'🔊':'🔇'}
+function go(k){clearInterval(window.QT);stage.onclick=null;R=rng(Date.now()%1e9);window.scrollTo(0,0);hdr();({home:HOME,play:PLAY,QR,L0,L1,L2,L3,L4,L5})[k]()}
+
+/* ---------- level frame ---------- */
+let TK={};
+function lvl(i,body,tasks,chal){const L=LV[i];
+ stage.innerHTML=`<button class="btn s" onclick="go('home')">← All levels</button><div class="card" style="border-top:10px solid ${L.c}"><h2>${L.e} ${L.t}</h2><div class="goal">${L.goal}</div><div class="owl" id="owl"><span class="ow">🦉</span><div class="bub">Hoot! I am Professor Owl. Follow the checklist and I will cheer you on!</div></div><div style="margin-top:12px">${body}</div>
+ <h3>👇 Try these ${tasks.length} things</h3><ul class="tasks">${tasks.map(t=>`<li id="t_${t.id}"><span class="ck">⬜</span><div><div>${t.txt}</div><div class="why" hidden>${t.why}</div></div></li>`).join('')}</ul>
+ <h3>⭐ Challenge</h3><div id="chal"><p class="mut">🔒 Finish the things above to unlock the challenge.</p></div><div id="out"></div></div>`;
+ TK={n:tasks.length,set:new Set(),chal}}
+function done(id){if(TK.set.has(id))return;const li=$('#t_'+id);if(!li)return;TK.set.add(id);const ck=li.querySelector('.ck');ck.textContent='✅';ck.classList.add('pop');li.querySelector('.why').hidden=false;sfx('ok');addXP(10);say(PRAISE[Math.floor(Math.random()*PRAISE.length)]);if(TK.set.size===TK.n){$('#chal').innerHTML=TK.chal;if(TK.cb)TK.cb();setTimeout(()=>{say('🔓 Challenge unlocked! Show me what you learned!');toast('🔓 Challenge unlocked!');sfx('win')},400)}}
+function finish(i,st,msg){const p=S.stars[i],imp=p===null||st>p;if(imp)S.stars[i]=st;save();hdr();const xp=imp?st*25:st*8;
+ sfx(st>0?'win':'bad');if(st===3)confetti();say(st===3?'PERFECT! Hoot hoot! 🎉':st>0?'Well done! Can you get 3 stars?':'Oops! Try again, you can do it!');
+ $('#out').innerHTML=`<div class="res"><div class="stars">${'★'.repeat(st)}${'☆'.repeat(3-st)}</div><p>${msg}</p><div class="mut">${xp?'+'+xp+' XP':''} ${imp&&st>0?'· ✨ new best!':''}</div><div class="row">${st>0&&i<STARS_N-1?`<button class="btn g" onclick="go('L${i+1}')">Next level ▶</button>`:''}${st>0&&i===STARS_N-1?`<button class="btn g" onclick="go('QR')">⚡ Try Quick Rounds!</button>`:''}<button class="btn s" onclick="go('L${i}')">🔄 Play again</button></div></div>`;
+ if(xp)addXP(xp);const o=$('#out');if(o.scrollIntoView)o.scrollIntoView({behavior:'smooth'})}
+
+/* ---------- HOME ---------- */
+function HOME(){const r=rankInfo();stage.innerHTML=`<div class="card"><div class="row" style="justify-content:space-between;margin:0"><div><h2 style="margin:0">${r.t}</h2><div class="mut">${r.next?(r.next-P.xp)+' XP to '+r.nn:'Max rank reached! 👑'}</div></div><div style="text-align:right">🔥 <b>${P.streak}</b> day streak<br>⚡ Best score: <b>${P.best}</b></div></div><div class="bar"><i style="width:${r.pct}%"></i></div>
+<div class="row" style="margin-bottom:0">${BADGES.map(b=>`<span class="bdg ${P.badges.includes(b.id)?'on':''}" title="${b.d}">${P.badges.includes(b.id)?b.t:'🔒 '+b.d}</span>`).join('')}</div></div>
+<div class="card"><h2>👋 How it works</h2><div class="steps"><div>1️⃣ <b>Play</b><br>Tap the big buttons.</div><div>2️⃣ <b>Learn</b><br>A green box explains what you saw.</div><div>3️⃣ <b>Win</b><br>Earn ⭐ and XP, unlock badges, rank up!</div></div></div>
+<div class="tiles">${LV.map((L,i)=>`<button class="tile" style="background:${L.c}" ${unlocked(i)?'':'disabled'} onclick="go('L${i}')"><div class="em">${unlocked(i)?L.e:'🔒'}</div><b>Level ${i+1}: ${L.t}</b><span>${L.l}</span><div class="st">${S.stars[i]===null?'☆☆☆':'★'.repeat(S.stars[i])+'☆'.repeat(3-S.stars[i])}</div></button>`).join('')}
+<button class="tile" style="background:linear-gradient(135deg,#fde68a,#fca5a5)" onclick="go('QR')"><div class="em">⚡</div><b>Quick Rounds</b><span>Fast mini-games · combos · high score</span><div class="st">Best: ${P.best}</div></button></div>
+<div class="row c" style="margin-top:20px"><button class="btn s" onclick="go('play')">📝 Playtest feedback (for your report)</button></div>`}
+
+/* ---------- LEVEL 1: VILLAGE MONEY ---------- */
+function L0(){const nm=['Ravi','Sita','Mani','Latha','Kumar','Devi','Arun'],base=nm.map(()=>[20,25,30,35,40][Math.floor(rnd()*5)]),lv=nm.map(()=>0),STEP=[0,50,200,1000];let rich=false,game=false,taps=0;
+ const val=i=>lv[i]?STEP[lv[i]]:base[i],vals=()=>nm.map((_,i)=>val(i));
+ lvl(0,`<p class="lead">These 7 villagers earn money every month. The number is in thousands of rupees (₹20k = ₹20,000).</p><div id="ppl" class="people"></div>
+ <div class="row c"><button class="btn" id="add">🤵 Add the millionaire</button><button class="btn s" id="rm">Remove the millionaire</button></div><div class="cards3" id="cards"></div>`,
+ [{id:'a',txt:'Tap <b>🤵 Add the millionaire</b>. Then look at the 3 cards.',why:'The <b>Average</b> jumped to a huge number, but the <b>Middle</b> hardly changed. One super-rich person (called an <b>outlier</b>) pulls the average up, but he cannot move the middle person.'},
+  {id:'b',txt:'Tap <b>Remove the millionaire</b> to compare.',why:'Without him the Average and the Middle are close again. The <b>Middle (median)</b> is not fooled by extreme values.'}],
+ `<p>🕹️ <b>Trick the average!</b> Now <b>tap the villagers</b> to change how much they earn (each tap gives a bigger amount). Make the <b>Average at least ₹100k</b> while the <b>Middle stays ₹50k or less</b>. Use as few taps as you can!</p><div id="stat" class="cards3"></div><div class="row c"><button class="btn g" id="chk">✅ Check my village</button><button class="btn s" id="rst">↺ Start again</button></div><div id="chmsg"></div>`);
+ TK.cb=()=>{game=true;rich=false;taps=0;lv.fill(0);draw()};
+ function draw(){const all=nm.map((n,i)=>({n,i,v:val(i),e:i%2?'👩‍🌾':'👨‍🌾'}));if(rich)all.push({n:'MILLIONAIRE',v:1000,e:'🤵',r:1});all.sort((a,b)=>a.v-b.v||(a.r?1:0)-(b.r?1:0));
+  const v=all.map(p=>p.v),n=v.length,mid=n%2?[(n-1)/2]:[n/2-1,n/2],c={};v.forEach(x=>c[x]=(c[x]||0)+1);const mc=Math.max(...Object.values(c)),mo=Object.keys(c).filter(k=>c[k]===mc),av=mean(v),md=median(v);
+  $('#ppl').innerHTML=all.map((p,i)=>`<div class="person ${p.r?'rich':''}" ${game&&!p.r?`data-i="${p.i}" style="cursor:pointer;border-color:#4f46e5"`:''}><div class="face">${p.e}${p.r?'💰':''}</div><div class="nm">${p.n}</div><div class="money">₹${p.v}k</div><div class="badge">${mid.includes(i)?'📍 MIDDLE':(game&&!p.r?'👆 tap me':'')}</div></div>`).join('');
+  $('#cards').innerHTML=`<div class="cd" style="background:#fee2e2">📊 <b>Average</b><div class="big">₹${av.toFixed(0)}k</div><small>Add everyone’s money, divide by the number of people</small></div>
+  <div class="cd" style="background:#dcfce7">📍 <b>Middle</b><div class="big">₹${md}k</div><small>Line people up from least to most money. Take the person in the middle</small></div>
+  <div class="cd" style="background:#fef9c3">⭐ <b>Most common</b><div class="big">${mc>1?'₹'+mo.join(' / ₹')+'k':'none'}</div><small>The amount that appears the most times</small></div>`;
+  const st=$('#stat');if(st)st.innerHTML=`<div class="cd">${av>=100?'✅':'⬜'} Average ≥ ₹100k</div><div class="cd">${md<=50?'✅':'⬜'} Middle ≤ ₹50k</div><div class="cd">👆 Taps used<div class="big">${taps}</div></div>`}
+ $('#add').onclick=()=>{if(game)return;rich=true;draw();done('a')};$('#rm').onclick=()=>{if(game||!rich)return;rich=false;draw();done('b')};
+ $('#ppl').onclick=e=>{const p=e.target.closest('.person');if(!game||!p||p.dataset.i===undefined)return;const i=+p.dataset.i;lv[i]=(lv[i]+1)%4;taps++;draw()};
+ $('#chal').addEventListener('click',e=>{if(e.target.id==='rst'){lv.fill(0);taps=0;draw();return}if(e.target.id!=='chk')return;const v=vals(),a=mean(v),m=median(v);
+  if(a>=100&&m<=50)finish(0,taps<=3?3:taps<=6?2:1,`🎉 You tricked the average! It says <b>₹${a.toFixed(0)}k</b>, but the middle villager earns only <b>₹${m}k</b>. This is why <b>one extreme value (an outlier) can make the average misleading</b>, and why the Middle is safer.`);
+  else $('#chmsg').innerHTML=`<div class="why">Not yet: Average is ₹${a.toFixed(0)}k (need 100+), Middle is ₹${m}k (need 50 or less). Try tapping ONE villager several times.</div>`});
+ draw()}
+
+/* ---------- LEVEL 2: COIN ---------- */
+function L1(){const bi=Math.floor(rnd()*3),C=[0,1,2].map(i=>({p:i===bi?.85:.5,fl:[]})),BUD=90,used=()=>C.reduce((s,c)=>s+c.fl.length,0);
+ const panel=i=>`<div style="background:#f8fafc;border-radius:14px;padding:10px;text-align:center"><h3 style="margin:0">🪙 Coin ${i+1}</h3><div id="sq${i}" style="min-height:34px"></div><div id="ty${i}" class="mut">No flips yet</div><div class="row c"><button class="btn" data-f="${i}">Flip 10×</button><button class="btn s" data-c="${i}">Compare</button></div><div id="ac${i}"></div><div id="cb${i}"></div></div>`;
+ lvl(1,`<p class="lead">Here are 3 mystery coins 🪙. Two are <b>fair</b> (heads and tails equally likely). <b>One cheats</b> and lands heads much more often. You have <b>${BUD} flips</b> in total.</p><div class="g3">${[0,1,2].map(panel).join('')}</div><div id="used" style="text-align:center;font-weight:bold;margin-top:8px">Flips used: 0 / ${BUD}</div><div class="mut" style="text-align:center">🟡 H = heads &nbsp; ⚪ T = tails</div>`,
+ [{id:'a',txt:'Tap <b>Flip 10×</b> under Coin 1.',why:'Even a fair coin rarely gives exactly 5 heads and 5 tails. <b>Luck</b> makes results bounce around.'},
+  {id:'c',txt:'Tap <b>Compare</b> under Coin 1.',why:'The grey bars show what 1000 FAIR coins did with the same number of flips. The <b>red bar</b> is your coin. If it sits far out at the edge, a fair coin would almost never do that, so the coin is probably cheating. This idea is called a <b>hypothesis test</b>.'}],
+ `<p>🕹️ <b>Catch the cheater!</b> Flip and compare the coins. When you are sure, tap <b>🚨 This coin cheats!</b> under your suspect. (Fewer flips = more stars.)</p>`);
+ TK.cb=()=>{[0,1,2].forEach(i=>$('#ac'+i).innerHTML=`<button class="btn g" data-x="${i}">🚨 This coin cheats!</button>`)};
+ const heads=i=>C[i].fl.filter(x=>x).length;
+ function show(i){const n=C[i].fl.length,h=heads(i);$('#ty'+i).textContent=n?`Heads ${h} · Tails ${n-h} (${n} flips)`:'No flips yet';$('#sq'+i).innerHTML=C[i].fl.slice(-30).map(x=>`<span class="fp ${x?'h':'t'}">${x?'H':'T'}</span>`).join('');$('#used').textContent=`Flips used: ${used()} / ${BUD}`}
+ function cmp(i){const n=C[i].fl.length,h=heads(i),box=$('#cb'+i);if(!n){box.innerHTML='<div class="why">Flip this coin first.</div>';return}
+  const c=Array(n+1).fill(0);for(let t=0;t<1000;t++){let k=0;for(let j=0;j<n;j++)if(rnd()<.5)k++;c[k]++}
+  const mx=Math.max(...c),w=500/(n+1),p=c.reduce((s,v,k)=>s+(Math.abs(k-n/2)>=Math.abs(h-n/2)?v:0),0)/1000;
+  box.innerHTML=`<svg viewBox="0 0 560 190">${c.map((v,k)=>`<rect x="${30+k*w}" y="${150-v/mx*120}" width="${Math.max(w-1,1)}" height="${v/mx*120}" fill="${k===h?'#dc2626':'#cbd5e1'}"/>`).join('')}<text x="30" y="178" font-size="14">0 heads</text><text x="450" y="178" font-size="14">${n} heads</text><text x="30" y="16" font-size="14">Grey = 1000 fair coins · Red = this coin (${h} heads)</text></svg>
+  <div class="why">Your coin: <b>${h} heads</b> out of ${n} flips (a fair coin gives about ${n/2} heads). Only about <b>${p<.01?'less than 1':Math.round(p*100)}</b> in 100 fair coins look this unusual. ${p<.05?'Very rare: <b>probably cheating</b>.':'Normal for a fair coin: <b>no proof yet</b>. Flip more!'}</div>`;done('c')}
+ stage.onclick=e=>{const t=e.target,f=t.dataset.f,c=t.dataset.c,x=t.dataset.x;
+  if(f!==undefined){if(used()+10>BUD){$('#used').textContent='⚠️ Not enough flips left! Make your accusation.';return}for(let i=0;i<10;i++)C[f].fl.push(rnd()<C[f].p);show(+f);done('a');if($('#cb'+f).innerHTML)cmp(+f)}
+  else if(c!==undefined)cmp(+c);
+  else if(x!==undefined){const ok=+x===bi,u=used();finish(1,ok?(u<=60?3:2):0,`${ok?'✅ Caught him!':'❌ Wrong coin!'} <b>Coin ${bi+1}</b> was the cheater 😈 (it lands heads 85% of the time). You used ${u} flips.${ok?'':' A fair coin can look suspicious just by luck, so always compare before accusing.'}`)}}}
+
+/* ---------- LEVEL 3: ICE CREAM ---------- */
+function L2(){const T=Array.from({length:14},()=>20+rnd()*20),Y=T.map(t=>12*(t-18)+25*gauss());let sl=0,h=100,rv=false,stock=null;
+ const mx=mean(T),my=mean(Y);let sxy=0,sxx=0;T.forEach((t,i)=>{sxy+=(t-mx)*(Y[i]-my);sxx+=(t-mx)**2});const b=sxy/sxx,a20=my+b*(20-mx),
+  err=(s,hh)=>Math.sqrt(mean(T.map((t,i)=>(Y[i]-(hh+s*(t-20)))**2))),best=err(b,a20),pred=a20+b*15;
+ lvl(2,`<p class="lead">Each 🍦 is one day: how hot it was (across) and how many ice creams a shop sold (up). Hotter days sell more! Can you draw a line that follows the 🍦?</p><div id="plot"></div>
+ <label>↗️ How steep is the line? <b id="sv">0</b></label><input id="sl" type="range" min="0" max="20" step="0.5" value="0">
+ <label>↕️ How high does it start? <b id="hv">100</b></label><input id="hi" type="range" min="-50" max="300" step="5" value="100">
+ <div class="cards3" style="margin-top:10px"><div class="cd" id="er"></div></div><div class="row c"><button class="btn s" id="bl">✨ Show the best line</button></div>`,
+ [{id:'a',txt:'Drag the <b>steepness</b> slider.',why:'The orange dashed lines show how wrong your line is for each day (the <b>mistakes</b>). The shorter they are, the better.'},
+  {id:'b',txt:'Drag the <b>start height</b> slider.',why:'Moving the line up or down changes the mistakes too. Try to make “Typical mistake” as small as possible.'},
+  {id:'c',txt:'Tap <b>✨ Show the best line</b>.',why:'The green line is the computer’s best line. It makes the mistakes as small as possible. This is called <b>linear regression</b> (a best-fit line). We can now <b>predict</b> sales for any temperature!'}],
+ `<p>🕹️ <b>Run the ice cream shop!</b> Tomorrow will be <b>35°C</b> (the purple dashed line on the chart). Slide to choose how many ice creams to prepare, then open the shop. Too few = lost sales. Too many = waste!</p><label>📦 Ice creams to prepare: <b id="stv">150</b></label><input id="st" type="range" min="0" max="350" step="5" value="150"><div class="row c"><button class="btn g" id="open">🏪 Open the shop!</button></div>`);
+ TK.cb=()=>{stock=150;draw()};
+ const X=t=>50+(t-18)/24*480,Yy=v=>270-(v+40)/380*250;
+ function draw(){let s='';[20,25,30,35,40].forEach(t=>s+=`<text x="${X(t)-10}" y="292" font-size="13">${t}°C</text><line x1="${X(t)}" x2="${X(t)}" y1="270" y2="274" stroke="#999"/>`);
+  s+='<line x1="50" x2="530" y1="270" y2="270" stroke="#999"/><line x1="50" x2="50" y1="20" y2="270" stroke="#999"/><text x="4" y="14" font-size="13">ice creams sold ↑</text>';
+  T.forEach((t,i)=>{const p=clamp(h+sl*(t-20),-40,340);s+=`<line x1="${X(t)}" x2="${X(t)}" y1="${Yy(Y[i])}" y2="${Yy(p)}" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4"/>`});
+  s+=`<line x1="${X(18)}" y1="${Yy(clamp(h+sl*-2,-60,360))}" x2="${X(42)}" y2="${Yy(clamp(h+sl*22,-60,360))}" stroke="#dc2626" stroke-width="4"/>`;
+  if(rv)s+=`<line x1="${X(18)}" y1="${Yy(a20+b*-2)}" x2="${X(42)}" y2="${Yy(a20+b*22)}" stroke="#16a34a" stroke-width="4" stroke-dasharray="8"/>`;
+  T.forEach((t,i)=>s+=`<text x="${X(t)-10}" y="${Yy(Y[i])+6}" font-size="20">🍦</text>`);
+  if(stock!==null)s+=`<line x1="${X(35)}" x2="${X(35)}" y1="20" y2="270" stroke="#7c3aed" stroke-width="3" stroke-dasharray="6"/><text x="${X(35)-14}" y="${Yy(stock)+8}" font-size="26">📦</text><text x="${X(35)-60}" y="${Yy(stock)-8}" font-size="13" fill="#7c3aed">your stock: ${stock}</text>`;
+  $('#plot').innerHTML=`<svg viewBox="0 0 560 300">${s}</svg>`;$('#sv').textContent=sl;$('#hv').textContent=h;const e=err(sl,h);
+  $('#er').innerHTML=`Typical mistake<div class="big">${e.toFixed(0)} ice creams</div><small>${e<=best*1.15?'🎉 Great line!':'Keep adjusting…'}</small>`}
+ $('#sl').oninput=e=>{sl=+e.target.value;draw();done('a')};$('#hi').oninput=e=>{h=+e.target.value;draw();done('b')};$('#bl').onclick=()=>{rv=true;draw();done('c')};
+ $('#chal').addEventListener('input',e=>{if(e.target.id==='st'){stock=+e.target.value;$('#stv').textContent=stock;draw()}});
+ $('#chal').addEventListener('click',e=>{if(e.target.id!=='open')return;const want=Math.max(0,Math.round(pred+25*gauss())),sold=Math.min(stock,want),waste=Math.max(0,stock-want),lost=Math.max(0,want-stock),d=Math.abs(stock-want),st=d<=30?3:d<=60?2:d<=100?1:0;
+  finish(2,st,`Customers wanted <b>${want}</b> ice creams. You prepared <b>${stock}</b>: sold ${sold}, ${waste?`wasted ${waste} 🗑️`:'wasted none'}, ${lost?`lost ${lost} sales 😢`:'lost no sales'}.<br>${st>=2?'Nice! Using the best line to predict makes smart decisions.':'Tip: follow the green line up to 35°C to see how many ice creams to expect.'}`)});
+ draw()}
+
+/* ---------- LEVEL 4: FRUITS ---------- */
+function L3(){const K=rnd()<.5?3:4,EM=['🍎','🍌','🍇','🍊'],base=[[2.2,2.2],[7.8,2.4],[2.4,7.6],[7.6,7.8]].sort(()=>rnd()-.5).slice(0,K),pts=[];
+ base.forEach((c,ci)=>{for(let i=0;i<22;i++)pts.push({x:c[0]+.9*gauss(),y:c[1]+.9*gauss(),c:ci})});
+ const d2=(a,b)=>(a.x-b.x)**2+(a.y-b.y)**2,COL=['#4f46e5','#dc2626','#16a34a','#f59e0b','#0891b2','#c026d3'];
+ function km(k){let best=null;for(let t=0;t<6;t++){let c=[];const pool=pts.slice();for(let i=0;i<k;i++)c.push({...pool.splice(Math.floor(rnd()*pool.length),1)[0]});let a;
+  for(let it=0;it<25;it++){a=pts.map(p=>{let b=0;c.forEach((q,j)=>{if(d2(p,q)<d2(p,c[b]))b=j});return b});c=c.map((q,j)=>{const m=pts.filter((_,i)=>a[i]===j);return m.length?{x:mean(m.map(p=>p.x)),y:mean(m.map(p=>p.y))}:q})}
+  const inn=pts.reduce((s,p,i)=>s+d2(p,c[a[i]]),0);if(!best||inn<best.inn)best={a,inn}}return best}
+ const IN=[1,2,3,4,5,6].map(k=>km(k).inn);let k=2,asg=null,reveal=false;
+ lvl(3,`<p class="lead">A shop owner mixed up some fruits and put them on a chart by <b>weight</b> and <b>sweetness</b>. Nobody told us which fruit is which. Let the computer sort them into groups!</p><div id="plot"></div>
+ <label>How many groups? <b id="kv">2</b></label><input id="k" type="range" min="1" max="6" value="2">
+ <div class="row c"><button class="btn" id="gr">🧩 Group them!</button><button class="btn s" id="ch">📉 Show the tightness chart</button></div><div id="chart"></div>`,
+ [{id:'a',txt:'Tap <b>🧩 Group them!</b>',why:'The computer put similar fruits in the same colour, all by itself. Nobody gave it the answer! This is called <b>clustering</b>.'},
+  {id:'b',txt:'Move the <b>How many groups?</b> slider to a different number.',why:'The colours change. Too few groups mixes different fruits together. Too many groups splits one fruit type into pieces.'},
+  {id:'c',txt:'Tap <b>📉 Show the tightness chart</b>.',why:'Short bars mean tight, neat groups. The bars drop fast at first, then slow down. The “bend” (called the <b>elbow</b>) shows the best number of groups.'}],
+ `<p>🕹️ Use the <b>How many groups?</b> slider above to set the number of fruit types you think there are. When you are happy with the colours, lock it in. The game will then reveal the real fruits!</p><div class="row c"><button class="btn g" id="lock">🔒 Lock in my groups</button></div>`);
+ function draw(){let s='<line x1="40" x2="530" y1="270" y2="270" stroke="#999"/><line x1="40" x2="40" y1="20" y2="270" stroke="#999"/><text x="440" y="292" font-size="13">weight →</text><text x="4" y="14" font-size="13">sweetness ↑</text>';
+  pts.forEach((p,i)=>{const X=40+p.x*49,Y=270-p.y*25;s+=reveal?`<text x="${X-9}" y="${Y+7}" font-size="19">${EM[p.c]}</text>`:`<circle cx="${X}" cy="${Y}" r="7" fill="${asg?COL[asg[i]]:'#94a3b8'}" stroke="#fff"/>`});
+  $('#plot').innerHTML=`<svg viewBox="0 0 560 300">${s}</svg>`;$('#kv').textContent=k}
+ const group=()=>{asg=km(k).a;draw()};
+ $('#gr').onclick=()=>{group();done('a')};$('#k').oninput=e=>{k=+e.target.value;group();done('a');done('b')};
+ $('#ch').onclick=()=>{$('#chart').innerHTML=`<svg viewBox="0 0 560 200">${IN.map((v,i)=>{const h=v/IN[0]*130;return `<rect x="${50+i*80}" y="${160-h}" width="50" height="${h}" fill="${i+1===k?'#4f46e5':'#c7d2fe'}"/><text x="${68+i*80}" y="182" font-size="14">${i+1}</text>`}).join('')}<text x="30" y="16" font-size="13">Looseness of the groups for each number of groups (shorter = tighter)</text></svg>`;done('c')};
+ $('#chal').onclick=e=>{if(e.target.id!=='lock')return;const n=k;reveal=true;draw();const d=Math.abs(n-K);
+  finish(3,d===0?3:d===1?1:0,`The shop really had <b>${K} types of fruit</b> (${EM.slice(0,K).join(' ')}). You said ${n}. ${d===0?'✅ Perfect!':'Look at the tightness chart: the elbow was at '+K+'.'}`)};draw()}
+
+/* ---------- LEVEL 5: CAT OR DOG? (KNN) ---------- */
+function L4(){
+ const gp=(cx,cy,sd)=>({x:clamp(cx+sd*gauss(),.2,9.8),y:clamp(cy+sd*gauss(),.2,9.8)});
+ const tr=[],te=[];
+ for(let i=0;i<25;i++){tr.push({...gp(3.2,3.2,1.1),c:0});tr.push({...gp(6.8,6.8,1.1),c:1})}
+ for(let i=0;i<5;i++){tr.push({...gp(6.8,6.8,.8),c:0});tr.push({...gp(3.2,3.2,.8),c:1})} /* a few odd pets */
+ for(let i=0;i<6;i++){te.push({...gp(3.2,3.2,1.1),c:0});te.push({...gp(6.8,6.8,1.1),c:1})}
+ const EM=['🐱','🐶'],NM=['Cat','Dog'],d2=(a,b)=>(a.x-b.x)**2+(a.y-b.y)**2;
+ let K=3,my=null,res=null,showTest=false,s1=false,s15=false;
+ const vote=(p,k)=>{const n=tr.map(q=>({q,d:d2(p,q)})).sort((a,b)=>a.d-b.d).slice(0,k).map(o=>o.q),v=[0,0];n.forEach(q=>v[q.c]++);return{n,v,c:v[1]>v[0]?1:0}};
+ const X=x=>40+x*49,Y=y=>270-y*25;
+ lvl(4,`<p class="lead">Here are pets we already know: 🐱 cats and 🐶 dogs, placed by <b>weight</b> and <b>ear length</b>. A new <b>mystery pet</b> ❓ arrives. Is it a cat or a dog? <b>Tap anywhere on the chart</b> to place it!</p><div id="plot"></div>
+ <label>👥 How many neighbors vote (K)? <b id="kv">3</b></label><input id="kk" type="range" min="1" max="15" step="2" value="3"><div id="vr" class="why" style="font-size:18px"></div>`,
+ [{id:'a',txt:'Tap the chart to place the mystery pet ❓.',why:'The computer looks at the <b>K closest known pets</b> (the purple lines) and lets them <b>vote</b>. The winner decides the label. This is called <b>K-Nearest Neighbors</b>.'},
+  {id:'b',txt:'Move the <b>K slider</b> to a different number.',why:'K is how many neighbors get a vote. Watch the purple lines and the vote count change.'},
+  {id:'c',txt:'Slide K all the way to <b>1</b>, then all the way to <b>15</b>.',why:'<b>K=1</b> trusts a single neighbor, so one odd pet can fool it. <b>K=15</b> asks so many pets that far-away ones also vote. A <b>middle K</b> usually works best.'}],
+ `<p>🕹️ <b>Test your K!</b> 12 new pets are hiding on the chart as ❔. Pick the best K with the slider above, then press Test. Can you get <b>11 or more</b> right?</p><div class="row c"><button class="btn g" id="tst">🧪 Test my K</button></div>`);
+ TK.cb=()=>{showTest=true;draw()};
+ function draw(){let s='<line x1="40" x2="530" y1="270" y2="270" stroke="#999"/><line x1="40" x2="40" y1="20" y2="270" stroke="#999"/><text x="360" y="292" font-size="13">weight (light → heavy) →</text><text x="4" y="14" font-size="13">ear length ↑</text>';
+  let v=null;if(my){v=vote(my,K);v.n.forEach(q=>s+=`<line x1="${X(my.x)}" y1="${Y(my.y)}" x2="${X(q.x)}" y2="${Y(q.y)}" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4"/>`)}
+  tr.forEach(p=>s+=`<text x="${X(p.x)-9}" y="${Y(p.y)+6}" font-size="17">${EM[p.c]}</text>`);
+  if(v)v.n.forEach(q=>s+=`<circle cx="${X(q.x)}" cy="${Y(q.y)-1}" r="13" fill="none" stroke="#7c3aed" stroke-width="2.5"/>`);
+  if(res)te.forEach((p,i)=>s+=`<circle cx="${X(p.x)}" cy="${Y(p.y)-1}" r="15" fill="${res[i]?'#86efac':'#fca5a5'}" opacity=".85"/><text x="${X(p.x)-9}" y="${Y(p.y)+6}" font-size="17">${EM[p.c]}</text>`);
+  else if(showTest)te.forEach(p=>s+=`<text x="${X(p.x)-9}" y="${Y(p.y)+6}" font-size="17">❔</text>`);
+  if(my)s+=`<text x="${X(my.x)-14}" y="${Y(my.y)+9}" font-size="30">❓</text>`;
+  $('#plot').innerHTML=`<svg viewBox="0 0 560 300" style="cursor:crosshair">${s}</svg>`;$('#kv').textContent=K;
+  $('#vr').innerHTML=v?`The closest <b>${K}</b> pet${K>1?'s':''}: 🐱 <b>${v.v[0]}</b> vs 🐶 <b>${v.v[1]}</b> → the computer says: <b>${NM[v.c]}</b> ${EM[v.c]}`:'👆 Tap the chart to place the mystery pet.'}
+ $('#plot').onclick=e=>{const sv=e.target.closest('svg');if(!sv)return;const r=sv.getBoundingClientRect(),vx=(e.clientX-r.left)/r.width*560,vy=(e.clientY-r.top)/r.height*300;
+  my={x:clamp((vx-40)/49,0,10),y:clamp((270-vy)/25,0,10)};draw();done('a');if(s1&&s15)done('c')};
+ $('#kk').oninput=e=>{K=+e.target.value;if(K===1)s1=true;if(K>=13)s15=true;draw();if(my){done('b');if(s1&&s15)done('c')}};
+ $('#chal').addEventListener('click',e=>{if(e.target.id!=='tst')return;res=te.map(p=>vote(p,K).c===p.c);draw();const n=res.filter(Boolean).length,st=n>=11?3:n>=10?2:n>=8?1:0;
+  finish(4,st,`With <b>K=${K}</b> the computer got <b>${n} out of 12</b> new pets right (green = correct, red = wrong). ${K===1?'K=1 listens to only ONE neighbor, so an odd pet can fool it. Try a bigger K!':K>=13?'A very big K lets far-away pets vote too. Try a middle number like 5 to 9!':'A middle K is a good balance: not fooled by one odd pet, and still listening to nearby pets.'}`)});
+ draw()}
+
+/* ---------- LEVEL 6: ASK THE VILLAGE (SAMPLING & BIAS) ---------- */
+function L5(){const pL=Math.round(25+rnd()*50),pC=Math.round(25+rnd()*50),BUD=40;let tru=pL,chal=false,asked=0,log=[];
+ const bin=(n,p)=>{let k=0;for(let i=0;i<n;i++)if(rnd()<p)k++;return k};
+ lvl(5,`<p class="lead">A village has 1000 people. We want to know: <b>what percent of them love cricket 🏏?</b> We cannot ask everyone, so we ask a few people. That small group is called a <b>sample</b>.</p><div id="tru" class="goal"></div>
+ <div class="row c"><button class="btn" data-m="r" data-n="5">🎲 Ask 5 random people</button><button class="btn" data-m="r" data-n="40">🎲 Ask 40 random people</button><button class="btn s" data-m="s" data-n="20">🏟️ Ask 20 people at the cricket stadium</button></div><div id="svy"></div>`,
+ [{id:'a',txt:'Tap <b>🎲 Ask 5 random people</b> a few times.',why:'With only 5 people the answer jumps around a lot. A small sample is easily fooled by <b>luck</b>.'},
+  {id:'b',txt:'Tap <b>🎲 Ask 40 random people</b>.',why:'A <b>bigger sample</b> usually lands closer to the real answer. It is still not perfect, but it is steadier.'},
+  {id:'c',txt:'Tap <b>🏟️ Ask 20 people at the cricket stadium</b>.',why:'Of course people at a cricket stadium love cricket! This is a <b>biased sample</b>: it does not look like the whole village. A big biased sample is worse than a small random one.'}],
+ `<p>🕹️ <b>Guess the secret!</b> This is a <b>new village</b> with a secret number (the table was cleared). You can ask only <b>40 people</b> in total, using the buttons above. Then slide to your guess and lock it in.</p><label>My guess: <b id="gv">50</b>% love cricket</label><input id="gs" type="range" min="0" max="100" value="50"><div class="row c"><button class="btn g" id="lk">🔒 Lock in my guess</button></div>`);
+ TK.cb=()=>{chal=true;tru=pC;log=[];asked=0;draw()};
+ function draw(){$('#tru').innerHTML=chal?`🙈 The real answer is hidden. You can still ask <b>${BUD-asked}</b> more people.`:`🔓 Real answer (just for learning): <b>${tru}%</b> of the village loves cricket.`;
+  const rows=log.slice(-6).reverse().map(l=>{const pc=Math.round(l.y/l.n*100);return `<tr><td>${l.m==='r'?'🎲 Random':'🏟️ Stadium'}</td><td>${l.n}</td><td>${l.y}</td><td><div class="bar" style="margin:0"><i style="width:${pc}%;background:${l.m==='r'?'#6366f1':'#f59e0b'}"></i></div>${pc}%</td></tr>`}).join('');
+  const RR=log.filter(l=>l.m==='r'),rn=RR.reduce((s,l)=>s+l.n,0),ry=RR.reduce((s,l)=>s+l.y,0);
+  $('#svy').innerHTML=log.length?`<table style="margin-top:10px"><tr><th>Who we asked</th><th>People</th><th>Said YES</th><th>% YES</th></tr>${rows}</table>`+(rn?`<div class="cd" style="margin-top:10px">🎲 Best guess from random people so far<div class="big">${Math.round(ry/rn*100)}%</div><small>based on ${rn} random people</small></div>`:''):'<p class="mut" style="text-align:center">No surveys yet. Tap a button above 👆</p>'}
+ stage.onclick=e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.m){const n=+b.dataset.n,m=b.dataset.m;
+   if(chal&&asked+n>BUD){$('#svy').insertAdjacentHTML('afterbegin','<div class="why" style="background:#fef2f2;border-color:#dc2626">⚠️ Not enough budget left for that group. Pick a smaller one or lock in your guess.</div>');return}
+   log.push({m,n,y:bin(n,m==='r'?tru/100:.92)});asked+=n;draw();
+   if(!chal){if(m==='r'&&n===5)done('a');if(m==='r'&&n===40)done('b');if(m==='s')done('c')}}
+  else if(b.id==='lk'){const g=+$('#gs').value,d=Math.abs(g-pC),st=d<=6?3:d<=12?2:d<=18?1:0,bias=log.some(l=>l.m==='s');
+   finish(5,st,`The real answer was <b>${pC}%</b>. You guessed <b>${g}%</b> (off by ${d}). ${bias?'You asked people at the stadium. They all love cricket, so that pulled your guess too high. Ask people at <b>random</b> instead!':asked===0?'You did not ask anyone, that was a blind guess! Ask random people first.':asked<30?`You only asked ${asked} people. Using your whole budget of 40 random people gives a steadier guess.`:'Nice! Asking lots of random people gives a fair picture of the village.'}`)}};
+ $('#chal').addEventListener('input',e=>{if(e.target.id==='gs')$('#gv').textContent=e.target.value});
+ draw()}
+
+/* ---------- QUICK ROUNDS ---------- */
+function mini(sd){let s=[40,28,16].map((r,i)=>`<circle cx="50" cy="50" r="${r}" fill="${['#bfdbfe','#fecaca','#fde047'][i]}" stroke="#94a3b8"/>`).join('');for(let i=0;i<8;i++){let x=gauss()*sd,y=gauss()*sd,d=Math.hypot(x,y);if(d>46){x*=46/d;y*=46/d}s+=`<circle cx="${50+x}" cy="${50+y}" r="3" fill="#dc2626" stroke="#fff"/>`}return `<svg viewBox="0 0 100 100">${s}</svg>`}
+/* brain-teaser bank: [question, right answer, wrong, wrong, explanation] */
+const CB=[
+['A computer finds groups of similar things all by itself. This is called…','Clustering','Regression','Averaging','Clustering groups similar items without being told the answers.'],
+['A line that helps us predict one number from another is called a…','Regression line','Pie chart','Fair coin','A regression (best-fit) line turns one number into a prediction.'],
+['If you flip a coin more and more times, the share of heads usually gets…','Closer to 50%','Wilder and wilder','Stuck at 100%','More flips means less luck. This is the law of large numbers.'],
+['A village has one billionaire. Which describes a typical villager better?','The median','The average','The biggest number','The billionaire (an outlier) drags the average up. The median stays fair.'],
+['Every number in a list goes up by 10. What happens to the average?','It goes up by 10','It stays the same','It doubles','Adding 10 to every number shifts the average by 10 too.'],
+['Small spread means the data points are…','Close together','Far apart','All negative','Spread tells how scattered the data is. Small spread = tightly packed.'],
+['In K-Nearest Neighbors, what does K mean?','How many neighbors vote','How many cats there are','How many dots are on the chart','K is the number of closest neighbors that get a vote.'],
+['A spam filter puts each email into “spam” or “not spam”. This is…','Classification','Regression','Averaging','Sorting into labels or groups is classification.'],
+['Ice cream sales and sunburns both rise in summer. Does ice cream cause sunburn?','No, hot sunny weather causes both','Yes, ice cream burns skin','Yes, always','Two things moving together does not mean one causes the other.'],
+['A probability of 0 means the event is…','Impossible','Certain','50-50','0 means it never happens. 1 means it always happens.'],
+['A probability of 1 means the event is…','Certain','Impossible','Unlikely','1 means it will definitely happen.'],
+['Which chart is best to show change over time?','Line chart','Pie chart','Table of names','A line chart follows a value as time passes.'],
+['Which chart shows parts of a whole, like slices of a pizza?','Pie chart','Line chart','Scatter plot','A pie chart splits one whole into slices.'],
+['Which chart shows how two numbers are related, one dot per item?','Scatter plot','Pie chart','Number line','A scatter plot places each item by two numbers.'],
+['You flip a fair coin and get 5 heads in a row. The chance of heads next is…','Still 50%','Much lower','100%','Coins have no memory. Each flip is a fresh 50-50.'],
+['Why do we hide some data (test data) from a computer while it learns?','To check it on examples it has never seen','To save paper','To make learning harder','Test data shows if the computer really learned or just memorised.'],
+['A computer memorises its training examples but fails on new ones. This is called…','Overfitting','Clustering','Sampling','Overfitting is memorising instead of understanding.'],
+['Cleaning data means…','Fixing mistakes and missing values','Washing the computer','Deleting everything','Real data has typos and gaps. Cleaning fixes them first.'],
+['In a data table, each row is usually…','One item, like one person','The table title','The average','Rows are items. Columns are facts about them.'],
+['In a data table, each column is usually…','One fact about every item','One person only','The final answer','A column holds one kind of fact, like age or weight.'],
+['Asking only your best friends for a school survey gives a…','Biased sample','Perfect sample','Random sample','Friends are alike, so they do not represent everyone.'],
+['A hypothesis test asks: could this result just be…','Luck?','Magic?','A colour?','We check if plain luck can explain what we saw.'],
+['An outlier is a value that is…','Far away from the others','The most common','Exactly the average','Outliers are the lonely values far from the crowd.'],
+['The mode is…','The value that appears most often','The middle value','The biggest value','Mode = most common value.'],
+['The median is…','The middle value after sorting','The value that appears most','The sum of all values','Sort the numbers, then pick the middle one.'],
+['More good examples of the same kind usually help a model to…','Learn better','Forget things','Run backwards','More good examples usually means better learning.'],
+['Why draw a chart before doing any maths?','You can spot patterns and odd points quickly','Charts are always right','Maths is banned','Pictures reveal patterns and outliers fast.'],
+['In KNN, choosing K=1 makes the computer listen to…','Only the single closest neighbor','Everyone','Nobody','K=1 trusts just the closest point.'],
+['A fair-looking coin lands heads 9 times in 10 flips. What should we suspect?','It may be unfair','It is surely broken','Nothing can be said ever','That is rare for a fair coin, so we suspect cheating (and flip more to be sure).'],
+['A bigger random sample usually gives…','A steadier, more trustworthy answer','A wrong answer','No answer','Bigger random samples are less affected by luck.'],
+['“Training a model” means…','Showing it many examples so it can learn','Making it run laps','Typing its name','A model learns patterns from examples during training.']];
+
+function QR(){let sc=0,cb=0,lv=3,n=0,left=0,tot=9,cur=null,lock=false,mx=0,deck=[],lastG=-1;
+ stage.innerHTML=`<button class="btn s" onclick="go('home')">← Home</button><div class="card"><h2>⚡ Quick Rounds</h2><div class="row" style="justify-content:space-between;font-weight:bold;font-size:20px"><span id="qh"></span><span id="qs"></span><span id="qc"></span></div><div class="bar"><i id="bar" style="transition:none"></i></div><div id="tip" class="goal" style="margin:10px 0">Answer fast! You have 3 lives ❤️. Streaks multiply your points 🔥 Questions come from many topics, so stay sharp!</div><div id="q" style="text-align:center"></div><div id="fb"></div><div class="row c"><button class="btn" id="go">▶ Start!</button></div></div>`;
+ const hud=()=>{$('#qh').textContent='❤️'.repeat(lv)+'🖤'.repeat(3-lv);$('#qs').textContent='Score '+sc;$('#qc').textContent=cb>=2?'🔥 combo '+cb+' (x'+(1+Math.floor(cb/3))+')':''};
+ const ids=()=>{const a=[];for(let i=0;i<7;i++)a.push(20+5*Math.floor(rnd()*5));return a};
+ const big=t=>`<div style="font-size:26px;font-weight:800;margin:8px">${t}</div>`;
+ const ncBag=bag([['Tomorrow’s temperature in °C','n'],['The price of a house','n'],['Is this email spam?','c'],['Is this photo a cat or a dog?','c'],['The marks a student will score','n'],['Will it rain tomorrow? Yes or no','c'],['How many steps you will walk tomorrow','n'],['Is this fruit ripe or not ripe?','c'],['The price of petrol next month','n'],['Which language is this sentence written in?','c']]);
+ const cbBag=bag(CB);
+ const samp=bag([['like pizza','students in the school','people standing in a pizza shop'],['love cricket','people in the city','people at a cricket stadium'],['exercise daily','people in the town','people at a gym'],['read books','people in the area','people at a library'],['like rainy days','people in the village','people selling umbrellas']]);
+ const barSets=bag([['🍎','🍌','🍇','🍊','🍓'],['🐶','🐱','🐰','🐟','🐦'],['⚽','🏏','🏀','🎾','🏸'],['🚗','🚲','🚌','🚆','✈️']]);
+ const gens=[
+ /* 0 outlier */
+ function(){const v=ids(),o=Math.floor(rnd()*7),bg=150+Math.floor(rnd()*150);v[o]=bg;return{tip:'🔎 An <b>outlier</b> is a value far away from all the others. Tap it!',html:v.map((x,i)=>`<button class="chip" data-a="${i}">👨‍🌾 ₹${x}k</button>`).join(''),ans:o,why:`₹${bg}k is far from the rest, so it is the outlier.`}},
+ /* 1 median */
+ function(){const k=pick([5,7]),set=new Set();while(set.size<k)set.add(10+ri(0,80));const v=[...set],so=v.slice().sort((a,b)=>a-b),md=so[(k-1)/2];return{tip:'📍 The <b>median</b> is the middle number after sorting smallest to biggest. Tap it!',html:v.map(x=>`<button class="chip" data-a="${x}">${x}</button>`).join(''),ans:md,why:`Sorted: ${so.join(', ')}. The middle one is ${md}.`}},
+ /* 2 archers */
+ function(){const a=rnd()<.5?'A':'B',sdv={A:a==='A'?7:26,B:a==='A'?26:7};return{tip:'🏹 <b>Spread</b> = how scattered the arrows are. Tap the <b>steadier</b> archer!',html:['A','B'].map(k=>`<button class="chip" data-a="${k}">${mini(sdv[k])}<br>Archer ${k}</button>`).join(''),ans:a,why:`Archer ${a} has arrows close together (small spread).`}},
+ /* 3 coin */
+ function(){const ch=rnd()<.5;let f,h;do{f=Array.from({length:12},()=>rnd()<(ch?.9:.5));h=f.filter(x=>x).length}while(ch?h<10:(h<4||h>8));return{tip:'🪙 A <b>fair</b> coin gives about half heads. Way more than half is suspicious. Fair or cheating?',html:`<div>${f.map(x=>`<span class="fp ${x?'h':'t'}">${x?'H':'T'}</span>`).join('')}</div><div style="margin-top:10px"><button class="chip" data-a="fair">😇 Fair</button><button class="chip" data-a="cheat">😈 Cheating</button></div>`,ans:ch?'cheat':'fair',why:`${h} heads out of 12. ${ch?'A fair coin almost never does that, so it cheats.':'That is normal for a fair coin.'}`}},
+ /* 4 clusters */
+ function(){const k=2+Math.floor(rnd()*3),cs=shuf([[2,2],[8,2],[2,8],[8,8]]).slice(0,k);let d='';cs.forEach(c=>{for(let i=0;i<12;i++)d+=`<circle cx="${c[0]*28+10+gauss()*9}" cy="${c[1]*17+12+gauss()*9}" r="4" fill="#6366f1" opacity=".75"/>`});return{tip:'🧩 A <b>cluster</b> is a clump of dots close together. How many clumps do you see?',html:`<svg viewBox="0 0 300 190" style="max-width:360px">${d}</svg><div>${[2,3,4].map(x=>`<button class="chip" data-a="${x}">${x}</button>`).join('')}</div>`,ans:k,why:`There are ${k} clumps, so ${k} clusters.`}},
+ /* 5 mean */
+ function(){let v,sum;do{v=Array.from({length:4},()=>ri(2,14));sum=v.reduce((a,b)=>a+b,0)}while(sum%4);const m=sum/4;return{t:4,tip:'📊 The <b>average (mean)</b>: add all the numbers, then divide by how many numbers there are.',html:big(v.join(' , '))+`<div>What is the average?</div><div>${chips(m,[m+1,m-1,m+2,m-2,Math.max(...v),sum])}</div>`,ans:m,why:`${v.join(' + ')} = ${sum}, and ${sum} ÷ 4 = ${m}.`}},
+ /* 6 mode */
+ function(){const a=ri(10,60),set=new Set([a]);const v=[a,a,a];while(v.length<7){const x=ri(10,60);if(!set.has(x)){set.add(x);v.push(x)}}return{t:2,tip:'⭐ The <b>mode</b> is the number that appears the <b>most times</b>.',html:big(shuf(v).join(' , '))+`<div>Which number is the mode?</div><div>${chips(a,[...set].filter(x=>x!==a))}</div>`,ans:a,why:`${a} appears 3 times. Every other number appears only once.`}},
+ /* 7 range */
+ function(){let v,mxv,mnv;do{v=Array.from({length:5},()=>ri(5,60));mxv=Math.max(...v);mnv=Math.min(...v)}while(mxv-mnv<8);const r=mxv-mnv;return{t:3,tip:'📏 The <b>range</b> = biggest number − smallest number. It tells how stretched the data is.',html:big(v.join(' , '))+`<div>What is the range?</div><div>${chips(r,[mxv,mnv,r+5,r-5,r+10,Math.round(mean(v))])}</div>`,ans:r,why:`Biggest ${mxv} − smallest ${mnv} = ${r}.`}},
+ /* 8 correlation */
+ function(){const t=pick(['up','down','none']);let d='';for(let i=0;i<22;i++){const x=rnd()*9+.5;let y=t==='up'?x+gauss()*.8:t==='down'?10-x+gauss()*.8:rnd()*9+.5;y=clamp(y,.3,9.7);d+=`<circle cx="${20+x*24}" cy="${190-y*18}" r="4" fill="#6366f1" opacity=".8"/>`}
+  return{tip:'📈 <b>Correlation</b> tells how two things move together. What pattern do the dots show?',html:`<svg viewBox="0 0 280 200" style="max-width:340px"><line x1="20" y1="190" x2="270" y2="190" stroke="#999"/><line x1="20" y1="10" x2="20" y2="190" stroke="#999"/>${d}</svg><div><button class="chip w" data-a="up">↗ Both go up together</button><button class="chip w" data-a="down">↘ One goes up, the other goes down</button><button class="chip w" data-a="none">🤷 No clear pattern</button></div>`,ans:t,why:t==='up'?'The dots rise from left to right: a positive correlation.':t==='down'?'The dots fall from left to right: a negative correlation.':'The dots are scattered everywhere: no correlation.'}},
+ /* 9 marbles */
+ function(){const tot=pick([4,5,8,10]),r=ri(1,tot-1),b=tot-r,em=shuf([...Array(r).fill('🔴'),...Array(b).fill('🔵')]);return{t:4,tip:'🎲 <b>Probability</b> = (ways to get what you want) ÷ (all possible outcomes).',html:`<div style="font-size:34px">${em.join('')}</div><div>Pick one marble without looking. What is the chance of 🔴?</div><div>${chips(r+'/'+tot,[b+'/'+tot,r+'/'+b,Math.min(r+1,tot-1)+'/'+tot,Math.max(r-1,1)+'/'+tot])}</div>`,ans:r+'/'+tot,why:`There are ${r} red marbles out of ${tot} in total, so the chance is ${r}/${tot}.`}},
+ /* 10 dice */
+ function(){if(rnd()<.4)return{t:3,tip:'🎲 With two dice, some totals can be made in more ways than others.',html:`<div style="font-size:40px">🎲🎲</div><div>Roll two dice and add them. Which total is the <b>most likely</b>?</div><div>${chips(7,[2,3,4,11,12,10,9,5])}</div>`,ans:7,why:'7 can be made 6 ways (1+6, 2+5, 3+4, 4+3, 5+2, 6+1). 2 and 12 have only 1 way.'};
+  const o=pick([{q:'an <b>even</b> number',w:3,y:'Even faces: 2, 4, 6 → 3 out of 6.'},{q:'an <b>odd</b> number',w:3,y:'Odd faces: 1, 3, 5 → 3 out of 6.'},{q:'a number <b>bigger than 4</b>',w:2,y:'Only 5 and 6 → 2 out of 6.'},{q:'a <b>6</b>',w:1,y:'Only one face is a 6 → 1 out of 6.'},{q:'a number <b>less than 3</b>',w:2,y:'Only 1 and 2 → 2 out of 6.'},{q:'a number that is <b>not 1</b>',w:5,y:'2, 3, 4, 5, 6 → 5 out of 6.'}]);
+  return{t:3,tip:'🎲 <b>Probability</b> = (ways to get what you want) ÷ (all possible outcomes).',html:`<div style="font-size:40px">🎲</div><div>Roll ONE die. What is the chance of ${o.q}?</div><div>${chips(o.w+'/6',['1/6','2/6','3/6','4/6','5/6'])}</div>`,ans:o.w+'/6',why:o.y}},
+ /* 11 percent */
+ function(){let nn,pc,k;do{nn=pick([10,20,25,40,50,200]);pc=pick([10,20,25,30,40,50,60,75]);k=nn*pc/100}while(!Number.isInteger(k));return{t:4,tip:'💯 <b>Percent</b> means “out of 100”. Divide the part by the total, then multiply by 100.',html:big(`${k} out of ${nn} students like cricket 🏏`)+`<div>What percent is that?</div><div>${chips(pc+'%',[(100-pc)+'%',(pc+10)+'%',Math.max(5,pc-10)+'%',k+'%',(pc+5)+'%'])}</div>`,ans:pc+'%',why:`${k} ÷ ${nn} = ${k/nn}, and × 100 = ${pc}%.`}},
+ /* 12 predict with a line */
+ function(){const a=pick([10,20,30,50]),b=pick([5,10,15,20]),x=ri(2,8),y=a+b*x,c=pick([['marks','study hours'],['ice creams sold','hot hours'],['steps walked','minutes']]);return{t:5,tip:'📈 A <b>regression line</b> turns a rule into predictions. Just plug in the number!',html:big(`${c[0]} = ${a} + ${b} × (${c[1]})`)+`<div>Predict the ${c[0]} for <b>${x}</b> ${c[1]}.</div><div>${chips(y,[y+b,y-b,b*x,a+x,y+a])}</div>`,ans:y,why:`${a} + ${b} × ${x} = ${a} + ${b*x} = ${y}.`}},
+ /* 13 fair sampling */
+ function(){const s=samp(),good=`Ask random ${s[1]}`,bad=`Ask only ${s[2]}`;return{t:3,tip:'📋 A <b>fair sample</b> looks like the whole group. Pick the fair way!',html:`<div style="margin:8px">We want to know who <b>${s[0]}</b>. Which way gives a <b>fair</b> answer?</div><div>${chips(good,[bad],2,'chip w')}</div>`,ans:good,why:`${bad.replace('Ask only','People')} would not look like everyone else, so that sample is biased. Random people give a fair picture.`}},
+ /* 14 sample size */
+ function(){const sm=pick([3,5,8,10,12]),bg=pick([300,500,800,1000]),good=`Survey of ${bg} random people`;return{t:3,tip:'🔢 A <b>bigger random sample</b> is usually more trustworthy.',html:`<div style="margin:8px">Two surveys tried to guess how many people like tea. Which is <b>more trustworthy</b>?</div><div>${chips(good,[`Survey of ${sm} random people`],2,'chip w')}</div>`,ans:good,why:`${bg} people give a steadier answer than ${sm}. Small samples are easily fooled by luck.`}},
+ /* 15 bar chart reading */
+ function(){const em=shuf(barSets()).slice(0,4),v=[],used=new Set();while(v.length<4){const x=ri(2,19);if(!used.has(x)){used.add(x);v.push(x)}}const most=rnd()<.5,idx=v.indexOf(most?Math.max(...v):Math.min(...v));
+  const bars=v.map((x,i)=>`<rect x="${30+i*60}" y="${170-x*8}" width="40" height="${x*8}" fill="${['#6366f1','#f59e0b','#16a34a','#dc2626'][i]}" rx="4"/><text x="${34+i*60}" y="194" font-size="22">${em[i]}</text>`).join('');
+  return{t:2,tip:'📊 A <b>bar chart</b> uses tall and short bars to compare things.',html:`<svg viewBox="0 0 280 200" style="max-width:340px"><line x1="20" y1="170" x2="270" y2="170" stroke="#999"/>${bars}</svg><div>Which one is the <b>${most?'most':'least'}</b> popular?</div><div>${chips(em[idx],em.filter((_,i)=>i!==idx),4)}</div>`,ans:em[idx],why:`${em[idx]} has the ${most?'tallest':'shortest'} bar.`}},
+ /* 16 number or label? */
+ function(){const q=ncBag();return{tip:'🔮 If the answer is a <b>number</b> we use regression. If it is a <b>label or group</b> we use classification.',html:big(q[0])+`<div>What are we predicting?</div><div><button class="chip" data-a="n">🔢 A number</button><button class="chip" data-a="c">🏷️ A label / group</button></div>`,ans:q[1],why:q[1]==='n'?'The answer is a number, so this is <b>regression</b>.':'The answer is a label or group, so this is <b>classification</b>.'}},
+ /* 17 brain teaser */
+ function(){const q=cbBag();return{t:3,tip:pick(['🧠 Brain teaser!','💡 Think fast!','🎓 Quick quiz!']),html:`<div style="font-size:21px;font-weight:700;margin:8px 0">${q[0]}</div><div>${chips(q[1],[q[2],q[3]],3,'chip w')}</div>`,ans:q[1],why:q[4]}}];
+ const order=[...gens.keys(),17,17];
+ function nextGen(){if(!deck.length){do{deck=shuf(order)}while(deck[deck.length-1]===lastG)}lastG=deck.pop();return lastG}
+ function next(){if(!$('#q'))return;if(lv<=0)return end();n++;lock=false;cur=gens[nextGen()]();tot=15;left=tot;$('#tip').innerHTML=cur.tip;$('#q').innerHTML=cur.html;$('#fb').innerHTML='';hud();$('#bar').style.width='100%';
+  clearInterval(window.QT);window.QT=setInterval(()=>{left-=.1;const b=$('#bar');if(!b){clearInterval(window.QT);return}b.style.width=Math.max(0,left/tot*100)+'%';if(left<=0){clearInterval(window.QT);ans(false,true)}},100)}
+ function ans(ok,to){if(lock)return;lock=true;clearInterval(window.QT);
+  if(ok){cb++;mx=Math.max(mx,cb);const pts=10*(1+Math.floor(cb/3))+Math.round(left);sc+=pts;sfx('ok');$('#fb').innerHTML=`<div class="why">✅ +${pts} points! ${cur.why}</div>`;if(cb===5)unlock('combo5');if(cb===10)unlock('combo10')}
+  else{cb=0;lv--;sfx('bad');$('#fb').innerHTML=`<div class="why" style="background:#fef2f2;border-color:#dc2626">${to?'⏰ Time is up!':'❌ Not quite.'} ${cur.why}</div>`}
+  hud();setTimeout(next,ok?1100:2800)}
+ function end(){const nb=sc>P.best,xp=Math.round(sc/5);if(nb)P.best=sc;saveP();if(nb||sc>=100)confetti();sfx('win');
+  $('#tip').innerHTML='🏁 Game over!';$('#q').innerHTML=`<div class="res" style="text-align:left"><div class="stars">🏁</div><h3>Score: ${sc} ${nb&&sc>0?'🏆 NEW HIGH SCORE!':''}</h3><p>Rounds: ${n-1} · Best streak: ${mx} · Best score: ${P.best}</p><p>+${xp} XP</p></div>`;$('#fb').innerHTML='';
+  $('#go').style.display='';$('#go').textContent='🔄 Play again';if(xp)addXP(xp);checkBadges()}
+ $('#q').onclick=e=>{const b=e.target.closest('[data-a]');if(!b||lock||!cur)return;ans(b.dataset.a===String(cur.ans))};
+ $('#go').onclick=()=>{sc=0;cb=0;lv=3;n=0;mx=0;deck=[];lastG=-1;$('#go').style.display='none';next()};hud()}
+
+/* ---------- PLAYTEST ---------- */
+function PLAY(){let L=[];try{L=JSON.parse(localStorage.getItem('dsp_play'))||[]}catch(e){}
+ const avg=a=>a.length?(a.reduce((s,x)=>s+x,0)/a.length).toFixed(1):'-';
+ stage.innerHTML=`<button class="btn s" onclick="go('home')">← Home</button><div class="card"><h2>📝 Playtest feedback</h2><p class="mut">Let friends play, then record what they say. Saved in this browser; export as CSV for your report.</p>
+ <div class="row"><input type="text" id="pn" placeholder="Friend's name"><select id="pf">${LV.map(l=>`<option>${l.t}</option>`).join('')}</select></div>
+ <div class="row"><label>Knew data science BEFORE (1-5) <input type="number" id="pb" min="1" max="5" value="1"></label><label>AFTER (1-5) <input type="number" id="pa" min="1" max="5" value="3"></label></div>
+ <textarea id="pl" rows="2" placeholder="What did they learn (in their own words)?"></textarea><textarea id="ps" rows="2" placeholder="Feedback: what was confusing or fun?" style="margin-top:6px"></textarea>
+ <div class="row"><button class="btn" id="add">Save</button><button class="btn s" id="csv">Export CSV</button><button class="btn s" id="clr">Clear all</button></div>
+ <div class="cards3"><div class="cd">Friends<div class="big">${L.length}</div></div><div class="cd">Avg before<div class="big">${avg(L.map(l=>+l.b))}</div></div><div class="cd">Avg after<div class="big">${avg(L.map(l=>+l.a))}</div></div><div class="cd">Avg gain<div class="big">${avg(L.map(l=>l.a-l.b))}</div></div></div>
+ <table style="margin-top:10px"><tr><th>Name</th><th>Favourite</th><th>Before→After</th><th>Learned</th><th>Feedback</th></tr>${L.map(l=>`<tr><td>${esc(l.n)}</td><td>${esc(l.f)}</td><td>${l.b}→${l.a}</td><td>${esc(l.l)}</td><td>${esc(l.s)}</td></tr>`).join('')}</table></div>`;
+ const st=()=>{try{localStorage.setItem('dsp_play',JSON.stringify(L))}catch(e){}};
+ $('#add').onclick=()=>{L.push({n:$('#pn').value||'Anon',f:$('#pf').value,b:+$('#pb').value,a:+$('#pa').value,l:$('#pl').value,s:$('#ps').value});st();PLAY()};
+ $('#clr').onclick=()=>{if(confirm('Delete all feedback?')){L=[];st();PLAY()}};
+ $('#csv').onclick=()=>{const q=v=>'"'+String(v).replace(/"/g,'""')+'"',t='name,favourite,before,after,learned,feedback\n'+L.map(l=>[l.n,l.f,l.b,l.a,l.l,l.s].map(q).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='playtest.csv';a.click()}}
+
+$('#snd').onclick=()=>{P.snd=!P.snd;saveP();hdr()};
+go('home');
+</script>
+</body>
+</html>
