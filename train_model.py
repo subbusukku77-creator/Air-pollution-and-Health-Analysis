@@ -1,27 +1,4 @@
-"""
-train_model.py
-==============
-Air Pollution and Health Impact Prediction - Model Training & Evaluation Pipeline
-Author: Antigravity (ML Engineer)
-Date: 2026-11-15
 
-This script performs end-to-end machine learning:
-1. Loads and explores the processed health impact dataset.
-2. Identifies features, checks for missing values, duplicates, and outliers.
-3. Applies a leakage-free preprocessing pipeline (StandardScaler fit only on training data).
-4. Trains and evaluates 6 regression algorithms:
-   - Linear Regression
-   - Decision Tree Regressor
-   - Random Forest Regressor
-   - Gradient Boosting Regressor
-   - XGBoost Regressor
-   - LightGBM Regressor
-5. Evaluates models on Test and Train sets using R², MAE, MSE, and RMSE.
-6. Selects the best performing model based on test generalization.
-7. Saves the complete preprocessing + model pipeline to 'models/health_impact_model.pkl'.
-8. Generates evaluation plots (Feature Importance, Actual vs. Predicted, Model Comparison).
-9. Tests pipeline predictions across the full spectrum (clean air, moderate, and high pollution).
-"""
 
 import os
 import sys
